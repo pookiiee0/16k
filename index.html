@@ -9,6 +9,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Marhey:wght@700&family=Silkscreen&display=swap" rel="stylesheet">
 
+  <!-- مكتبات Firebase الأساسية وقاعدة البيانات Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
   <style>
     * {
       margin: 0;
@@ -339,13 +343,30 @@
       box-shadow: 4px 4px 0px #ff69b4;
     }
 
+    .guestbook-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
     .guestbook-heading {
       font-size: 0.95rem;
       font-weight: bold;
       color: #ff007f;
-      text-align: center;
-      margin-bottom: 10px;
       text-shadow: 1px 1px 0px #ffd1dc;
+    }
+
+    .admin-key-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      opacity: 0.4;
+      transition: opacity 0.2s;
+    }
+    .admin-key-btn:hover {
+      opacity: 1;
     }
 
     .inp-field, .txt-field {
@@ -423,7 +444,7 @@
     }
 
     .messages-box {
-      max-height: 200px;
+      max-height: 220px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
@@ -436,13 +457,31 @@
       border-radius: 12px;
       padding: 9px 11px;
       box-shadow: 2px 2px 0px #ffd1dc;
+      position: relative;
+    }
+
+    .msg-sender-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2px;
     }
 
     .msg-sender {
       font-weight: bold;
       color: #ff007f;
       font-size: 0.82rem;
-      margin-bottom: 2px;
+    }
+
+    .delete-msg-btn {
+      background: #ff4d6d;
+      color: white;
+      border: none;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      display: none;
     }
 
     .msg-body {
@@ -581,7 +620,7 @@
         كبرت عائلتنا وصرنا 16k بوكيزز! شكراً لكل وحدة خلت سيرفرنا أدفى وأحلى مكان 💕
       </p>
 
-      <!-- 1. صندوق المفاجأة -->
+      <!-- 1. صندوق الهدية -->
       <div class="gift-btn" onclick="openGift()">
         <span class="gift-icon">🎁</span>
         <span class="gift-label">★ افتحي هديتك الاحتفالية! ★</span>
@@ -635,9 +674,13 @@
         </div>
       </div>
 
-      <!-- 4. دفتر الرسائل -->
+      <!-- 4. دفتر الرسائل التفاعلي مع Firebase -->
       <div class="guestbook">
-        <div class="guestbook-heading">★ GUESTBOOK: اتركي ذكرى أو صورة ★</div>
+        <div class="guestbook-header-row">
+          <div class="guestbook-heading">★ GUESTBOOK: اتركي ذكرى أو صورة ★</div>
+          <button class="admin-key-btn" title="لوحة تحكم الإدارة" onclick="loginAdmin()">🔒</button>
+        </div>
+
         <input type="text" id="guestName" class="inp-field" placeholder="اسمك أو يوزرك بالديسكورد ✨">
         <textarea id="guestMsg" class="txt-field" placeholder="اكتبي رسالتك الكيوت هنا..."></textarea>
         
@@ -649,11 +692,13 @@
           <span class="file-name-preview" id="fileNamePreview"></span>
         </div>
 
-        <button class="send-btn" onclick="submitMessage()">إرسال الكلمة 🌸</button>
+        <button class="send-btn" id="sendBtn" onclick="submitMessage()">إرسال الكلمة 🌸</button>
 
         <div class="messages-box" id="messagesList">
           <div class="msg-card">
-            <div class="msg-sender">💖 أسيل & ليان (الإدارة)</div>
+            <div class="msg-sender-row">
+              <div class="msg-sender">💖 أسيل & ليان (الإدارة)</div>
+            </div>
             <div class="msg-body">اهلا بأحلى بوكيز بالعالم! اكتبوا لنا ذكرياتكم وشاركونا صوركم الحلوة بالـ 16k 💕</div>
           </div>
         </div>
@@ -686,6 +731,165 @@
   </div>
 
   <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCVnrGHWR9PL2Jigw7JPg20GDJPwQ07akU",
+      authDomain: "pookie-16k.firebaseapp.com",
+      projectId: "pookie-16k",
+      storageBucket: "pookie-16k.firebasestorage.app",
+      messagingSenderId: "757846411305",
+      appId: "1:757846411305:web:81e52ed322a5eaabae7438",
+      measurementId: "G-DEJ1E2ZM93"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let isAdmin = false;
+
+    function loginAdmin() {
+      const pass = prompt('أهلاً بالإدارة (أسيل / ليان) 💕 أدخلي كلمة السر للتحكم:');
+      if (pass === '1234') {
+        isAdmin = true;
+        alert('تم تفعيل وضع الإدارة! يمكنكِ الآن حذف أي رسالة بالضغط على زر الحذف 🗑️');
+        updateDeleteButtonsVisibility();
+      } else if (pass !== null) {
+        alert('كلمة السر غير صحيحة!');
+      }
+    }
+
+    function updateDeleteButtonsVisibility() {
+      const btns = document.querySelectorAll('.delete-msg-btn');
+      btns.forEach(b => {
+        b.style.display = isAdmin ? 'inline-block' : 'none';
+      });
+    }
+
+    db.collection("messages").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+      const list = document.getElementById('messagesList');
+      list.innerHTML = `
+        <div class="msg-card">
+          <div class="msg-sender-row">
+            <div class="msg-sender">💖 أسيل & ليان (الإدارة)</div>
+          </div>
+          <div class="msg-body">اهلا بأحلى بوكيز بالعالم! اكتبوا لنا ذكرياتكم وشاركونا صوركم الحلوة بالـ 16k 💕</div>
+        </div>
+      `;
+
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const card = document.createElement('div');
+        card.className = 'msg-card';
+
+        let html = `
+          <div class="msg-sender-row">
+            <div class="msg-sender">🌸 ${escapeHtml(data.name)}</div>
+            <button class="delete-msg-btn" onclick="deleteMessage('${doc.id}')">🗑️ حذف</button>
+          </div>
+        `;
+
+        if (data.message) {
+          html += <div class="msg-body">${escapeHtml(data.message)}</div>;
+        }
+        if (data.image) {
+          html += <img src="${data.image}" class="msg-img" alt="صورة مرفقة">;
+        }
+
+        card.innerHTML = html;
+        list.appendChild(card);
+      });
+
+      updateDeleteButtonsVisibility();
+    });
+
+    function deleteMessage(docId) {
+      if (confirm('هل أنتِ متأكدة من رغبتك بحذف هذه الرسالة نهائياً؟')) {
+        db.collection("messages").doc(docId).delete()
+          .then(() => alert('تم حذف الرسالة بنجاح ✨'))
+          .catch(err => alert('حدث خطأ أثناء الحذف: ' + err.message));
+      }
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.innerText = text;
+      return div.innerHTML;
+    }
+
+    function compressImage(file, callback) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 450;
+
+          if (width > height && width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else if (height > maxDim) {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          callback(canvas.toDataURL('image/jpeg', 0.65));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function submitMessage() {
+      const nameInput = document.getElementById('guestName');
+      const msgInput = document.getElementById('guestMsg');
+      const photoInput = document.getElementById('guestPhoto');
+      const sendBtn = document.getElementById('sendBtn');
+
+      const name = nameInput.value.trim();
+      const msg = msgInput.value.trim();
+
+      if (!name || (!msg && !photoInput.files[0])) {
+        alert('اكتبي اسمك ورسالتك أو أرفقي صورة يا قمر 💕');
+        return;
+      }
+
+      sendBtn.disabled = true;
+      sendBtn.innerText = 'جاري الإرسال... ✨';
+
+      const saveDoc = (imgBase64) => {
+        db.collection("messages").add({
+          name: name,
+          message: msg,
+          image: imgBase64 || null,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+          nameInput.value = '';
+          msgInput.value = '';
+          photoInput.value = '';
+          document.getElementById('fileNamePreview').innerText = '';
+          sendBtn.disabled = false;
+          sendBtn.innerText = 'إرسال الكلمة 🌸';
+          dropConfetti();
+        }).catch((err) => {
+          alert('حدث خطأ أثناء الإرسال: ' + err.message);
+          sendBtn.disabled = false;
+          sendBtn.innerText = 'إرسال الكلمة 🌸';
+        });
+      };
+
+      if (photoInput.files && photoInput.files[0]) {
+        compressImage(photoInput.files[0], saveDoc);
+      } else {
+        saveDoc(null);
+      }
+    }
+
     function dropConfetti() {
       const colors = ['#ff007f', '#ff1493', '#ff69b4', '#ffb6c1', '#ffffff', '#ffd166', '#00f5d4'];
       for (let i = 0; i < 45; i++) {
@@ -745,53 +949,6 @@
         preview.innerText = '📎 ' + input.files[0].name;
       } else {
         preview.innerText = '';
-      }
-    }
-
-    function submitMessage() {
-      const nameInput = document.getElementById('guestName');
-      const msgInput = document.getElementById('guestMsg');
-      const photoInput = document.getElementById('guestPhoto');
-
-      const name = nameInput.value.trim();
-      const msg = msgInput.value.trim();
-
-      if (!name || (!msg && !photoInput.files[0])) {
-        alert('اكتبي اسمك ورسالتك أو أرفقي صورة يا قمر 💕');
-        return;
-      }
-
-      function buildCard(imgSrc) {
-        const card = document.createElement('div');
-        card.className = 'msg-card';
-        
-        let cardHTML = '<div class="msg-sender">💖 ' + name + '</div>';
-        if (msg) {
-          cardHTML += '<div class="msg-body">' + msg + '</div>';
-        }
-        if (imgSrc) {
-          cardHTML += '<img src="' + imgSrc + '" class="msg-img" alt="مرفق صورة">';
-        }
-
-        card.innerHTML = cardHTML;
-        const list = document.getElementById('messagesList');
-        list.insertBefore(card, list.firstChild);
-
-        nameInput.value = '';
-        msgInput.value = '';
-        photoInput.value = '';
-        document.getElementById('fileNamePreview').innerText = '';
-        dropConfetti();
-      }
-
-      if (photoInput.files && photoInput.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          buildCard(e.target.result);
-        };
-        reader.readAsDataURL(photoInput.files[0]);
-      } else {
-        buildCard(null);
       }
     }
   </script>
