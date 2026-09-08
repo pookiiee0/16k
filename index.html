@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>★ POOKIE • 16K CYBER CELEBRATION ★</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Marhey:wght@700&family=VT323&family=Silkscreen&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Marhey', Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* خلفية Y2K الشبك والنجوم */
+    body {
+      background-color: #ffb6c1;
+      background-image: 
+        radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.8) 0%, transparent 60%),
+        linear-gradient(rgba(255, 105, 180, 0.3) 1.5px, transparent 1.5px),
+        linear-gradient(90deg, rgba(255, 105, 180, 0.3) 1.5px, transparent 1.5px);
+      background-size: 100% 100%, 28px 28px, 28px 28px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 12px;
+      color: #ff007f;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* إطار نافذة Y2K السيبرانية */
+    .y2k-window {
+      background: rgba(255, 240, 245, 0.95);
+      border: 3.5px solid #ff1493;
+      border-radius: 28px;
+      max-width: 470px;
+      width: 100%;
+      box-shadow: 
+        8px 8px 0px #ff69b4,
+        14px 14px 0px rgba(255, 20, 147, 0.25),
+        inset 2px 2px 0px #ffffff;
+      position: relative;
+      z-index: 10;
+      overflow: hidden;
+    }
+
+    /* شريط عنوان النافذة الكلاسيكي */
+    .window-header {
+      background: linear-gradient(90deg, #ff1493, #ff69b4, #ff85c0);
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid #ff1493;
+      color: white;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+    }
+
+    .window-title {
+      font-family: 'Silkscreen', 'Fredoka', cursive;
+      font-weight: bold;
+      text-shadow: 1px 1px 0px #b30059;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .window-controls {
+      display: flex;
+      gap: 6px;
+      direction: ltr;
+    }
+
+    .win-btn {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      border: 1.5px solid #ffffff;
+      display: inline-block;
+      box-shadow: inset 1px 1px 2px rgba(0,0,0,0.3);
+    }
+    .win-btn.close { background: #ff4d6d; }
+    .win-btn.min { background: #ffd166; }
+    .win-btn.max { background: #06d6a0; }
+
+    .window-body {
+      padding: 24px 16px;
+      text-align: center;
+    }
+
+    /* شعار Pookie بتأثير الكروم واللمعان */
+    .bubble-logo {
+      font-family: 'Fredoka', cursive, sans-serif;
+      font-size: 3.8rem;
+      font-weight: 700;
+      background: linear-gradient(180deg, #ffffff 15%, #ff69b4 50%, #ff1493 85%, #b30059 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(3px 3px 0px #ffe4e1) drop-shadow(5px 5px 0px #ff007f);
+      line-height: 1;
+      margin-bottom: 4px;
+      display: inline-block;
+      animation: floatLogo 2s ease-in-out infinite !important;
+    }
+
+    @keyframes floatLogo {
+      0%, 100% { transform: translateY(0px) rotate(-1deg); }
+      50% { transform: translateY(-10px) rotate(1deg); }
+    }
+
+    .subtitle {
+      font-family: 'Silkscreen', cursive;
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      color: #ff1493;
+      text-shadow: 1px 1px 0px #ffffff;
+      margin-bottom: 14px;
+    }
+
+    /* شارة الإنجاز Y2K */
+    .milestone-badge {
+      display: inline-block;
+      background: #ff007f;
+      color: #ffffff;
+      font-size: 0.92rem;
+      font-weight: bold;
+      padding: 6px 20px;
+      border-radius: 50px;
+      border: 2px solid #ffffff;
+      box-shadow: 4px 4px 0px #ff69b4;
+      margin-bottom: 16px;
+      animation: pulseGlow 1.8s infinite alternate;
+    }
+
+    @keyframes pulseGlow {
+      from { box-shadow: 4px 4px 0px #ff69b4; }
+      to { box-shadow: 0 0 16px #ff1493, 4px 4px 0px #ffffff; }
+    }
+
+    p.intro {
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #a01a5b;
+      margin-bottom: 18px;
+      font-weight: bold;
+    }
+
+    /* 1. صندوق الهدية Y2K */
+    .gift-btn {
+      background: linear-gradient(135deg, #ffffff, #ffe4ec);
+      border: 2.5px dashed #ff1493;
+      border-radius: 20px;
+      padding: 14px;
+      margin-bottom: 16px;
+      cursor: pointer;
+      width: 100%;
+      display: block;
+      box-shadow: 4px 4px 0px #ff85c0;
+      transition: all 0.15s;
+    }
+
+    .gift-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #ff85c0;
+    }
+
+    .gift-icon {
+      font-size: 2.4rem;
+      display: inline-block;
+      animation: bounceGift 1.2s infinite ease-in-out;
+    }
+
+    @keyframes bounceGift {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+
+    .gift-label {
+      font-size: 0.95rem;
+      color: #ff007f;
+      font-weight: bold;
+      margin-top: 4px;
+      display: block;
+    }
+
+    .gift-result {
+      display: none;
+      margin-top: 10px;
+      padding: 12px;
+      background: #ffffff;
+      border: 2px solid #ff69b4;
+      border-radius: 14px;
+      color: #c71585;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      box-shadow: inset 2px 2px 0px #ffd1dc;
+    }
+
+    /* 2. زر الإعجاب Y2K Candy Gloss */
+    .love-btn {
+      background: linear-gradient(180deg, #ff85c0 0%, #ff1493 50%, #d80064 100%);
+      border: 2px solid #ffffff;
+      color: white;
+      font-size: 1rem;
+      padding: 10px 24px;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 4px 4px 0px #b30059;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      user-select: none;
+      transition: all 0.1s;
+    }
+
+    .love-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #b30059;
+    }
+
+    /* 3. لعبة الصيد Y2K Cyber Arena */
+    .game-section {
+      background: #ffe6f0;
+      border: 2.5px solid #ff1493;
+      border-radius: 22px;
+      padding: 14px 10px;
+      margin-bottom: 20px;
+      position: relative;
+      box-shadow: 4px 4px 0px #ff69b4;
+    }
+
+    .game-title {
+      font-size: 1.05rem;
+      font-weight: bold;
+      color: #ff007f;
+      margin-bottom: 2px;
+      text-shadow: 1px 1px 0px #ffffff;
+    }
+
+    .game-sub {
+      font-size: 0.8rem;
+      color: #99004d;
+      margin-bottom: 6px;
+    }
+
+    .score-badge {
+      background: #ffffff;
+      color: #ff007f;
+      border: 2px solid #ff1493;
+      padding: 3px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      display: inline-block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      box-shadow: 2px 2px 0px #ff69b4;
+    }
+
+    .arena {
+      width: 100%;
+      height: 250px;
+      background-color: #ffffff;
+      background-image: 
+        linear-gradient(rgba(255, 105, 180, 0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 105, 180, 0.2) 1px, transparent 1px);
+      background-size: 20px 20px;
+      border: 2px dashed #ff1493;
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .heart-target {
+      position: absolute;
+      font-size: 1.8rem;
+      cursor: pointer;
+      user-select: none;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 5;
+      filter: drop-shadow(2px 2px 0px rgba(255, 20, 147, 0.4));
+    }
+
+    #t1  { animation: fastA 1.2s infinite linear alternate; }
+    #t2  { animation: fastB 1.0s infinite ease-in-out alternate; }
+    #t3  { animation: fastC 1.3s infinite linear alternate; }
+    #t4  { animation: fastD 1.1s infinite ease-in-out alternate; }
+    #t5  { animation: fastE 1.4s infinite linear alternate; }
+    #t6  { animation: fastF 0.9s infinite ease-in-out alternate; }
+    #t7  { animation: fastA 1.5s infinite linear alternate-reverse; }
+    #t8  { animation: fastB 1.2s infinite ease-in-out alternate-reverse; }
+    #t9  { animation: fastC 0.95s infinite linear alternate-reverse; }
+    #t10 { animation: fastD 1.3s infinite ease-in-out alternate-reverse; }
+    #t11 { animation: fastE 1.1s infinite linear alternate-reverse; }
+    #t12 { animation: fastF 1.4s infinite ease-in-out alternate-reverse; }
+    #t13 { animation: fastA 1.0s infinite linear alternate; }
+    #t14 { animation: fastB 1.3s infinite ease-in-out alternate; }
+    #t15 { animation: fastC 1.1s infinite linear alternate; }
+    #t16 { animation: fastD 0.85s infinite ease-in-out alternate; }
+    #t17 { animation: fastE 1.25s infinite linear alternate; }
+    #t18 { animation: fastF 1.05s infinite ease-in-out alternate; }
+
+    @keyframes fastA { 0% { top: 5%; left: 8%; } 100% { top: 80%; left: 82%; } }
+    @keyframes fastB { 0% { top: 80%; left: 12%; } 100% { top: 8%; left: 78%; } }
+    @keyframes fastC { 0% { top: 45%; left: 85%; } 100% { top: 72%; left: 8%; } }
+    @keyframes fastD { 0% { top: 82%; left: 62%; } 100% { top: 12%; left: 28%; } }
+    @keyframes fastE { 0% { top: 12%; left: 52%; } 100% { top: 82%; left: 6%; } }
+    @keyframes fastF { 0% { top: 52%; left: 8%; } 100% { top: 18%; left: 84%; } }
+
+    .game-win {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: 16px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      z-index: 10;
+      border: 3px solid #ff1493;
+    }
+
+    /* 4. دفتر رسائل بنمط شاشة حاسوب Y2K */
+    .guestbook {
+      background: #ffffff;
+      border: 2.5px solid #ff1493;
+      border-radius: 22px;
+      padding: 14px;
+      margin-bottom: 20px;
+      text-align: right;
+      box-shadow: 4px 4px 0px #ff69b4;
+    }
+
+    .guestbook-heading {
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: #ff007f;
+      text-align: center;
+      margin-bottom: 10px;
+      text-shadow: 1px 1px 0px #ffd1dc;
+    }
+
+    .inp-field, .txt-field {
+      width: 100%;
+      border: 2px solid #ff85c0;
+      border-radius: 12px;
+      padding: 8px 10px;
+      font-size: 0.85rem;
+      color: #a01a5b;
+      outline: none;
+      margin-bottom: 8px;
+      background: #fffafa;
+    }
+
+    .inp-field:focus, .txt-field:focus {
+      border-color: #ff007f;
+      box-shadow: 0 0 8px rgba(255, 0, 127, 0.3);
+    }
+
+    .txt-field {
+      resize: none;
+      height: 55px;
+    }
+
+    .file-upload-wrap {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .file-label {
+      background: #ffe6f0;
+      border: 2px dashed #ff1493;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: #ff007f;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .file-name-preview {
+      font-size: 0.75rem;
+      color: #ff1493;
+      max-width: 110px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .send-btn {
+      background: linear-gradient(180deg, #ff69b4, #ff1493);
+      color: white;
+      border: 2px solid #ffffff;
+      border-radius: 25px;
+      padding: 8px 24px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: block;
+      margin: 0 auto 10px auto;
+      font-weight: bold;
+      box-shadow: 3px 3px 0px #b30059;
+    }
+
+    .send-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #b30059;
+    }
+
+    .messages-box {
+      max-height: 200px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .msg-card {
+      background: #fff5f8;
+      border: 1.5px solid #ffb3c6;
+      border-radius: 12px;
+      padding: 9px 11px;
+      box-shadow: 2px 2px 0px #ffd1dc;
+    }
+
+    .msg-sender {
+      font-weight: bold;
+      color: #ff007f;
+      font-size: 0.82rem;
+      margin-bottom: 2px;
+    }
+
+    .msg-body {
+      font-size: 0.82rem;
+      color: #723c4f;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    .msg-img {
+      margin-top: 6px;
+      max-width: 100%;
+      max-height: 160px;
+      border-radius: 10px;
+      object-fit: cover;
+      display: block;
+      border: 2px solid #ff69b4;
+    }
+
+    /* 5. قسم الإدارة Y2K */
+    .creators-wrap {
+      border-top: 2.5px dashed #ff69b4;
+      padding-top: 16px;
+    }
+
+    .creators-flex {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 8px;
+    }
+
+    .creator-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .avatar-circle {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      padding: 3px;
+      background: linear-gradient(135deg, #ffffff, #ff1493);
+      border: 2px solid #ff1493;
+      box-shadow: 3px 3px 0px #ff69b4;
+    }
+
+    .avatar-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
+    }
+
+    .creator-tag {
+      font-family: 'Silkscreen', cursive;
+      font-size: 0.85rem;
+      color: #ff007f;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .heart-pulse {
+      font-size: 2rem;
+      user-select: none;
+      display: inline-block;
+      animation: pulseAnim 0.8s infinite ease-in-out !important;
+      filter: drop-shadow(0 0 6px #ff1493);
+    }
+
+    @keyframes pulseAnim {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.4); }
+    }
+
+    .footer-sign {
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #b30059;
+      letter-spacing: 0.5px;
+    }
+
+    /* تأثير القصاصات النيون */
+    .confetti-piece {
+      position: fixed;
+      width: 10px;
+      height: 14px;
+      pointer-events: none;
+      z-index: 9999;
+      animation: fallDown 2.2s ease-out forwards;
+    }
+
+    @keyframes fallDown {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+    }
+
+    .floating-rose-pop {
+      position: fixed;
+      font-size: 1.6rem;
+      pointer-events: none;
+      z-index: 9999;
+      animation: flyRose 1s ease-out forwards;
+      filter: drop-shadow(0 0 5px #ff69b4);
+    }
+
+    @keyframes flyRose {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-90px) scale(1.6); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- نافذة الـ Y2K الرئيسية -->
+  <div class="y2k-window">
+    
+    <!-- شريط عنوان نافذة الحاسوب -->
+    <div class="window-header">
+      <div class="window-title">★ POOKIE_OS_V16.EXE ★</div>
+      <div class="window-controls">
+        <span class="win-btn close"></span>
+        <span class="win-btn min"></span>
+        <span class="win-btn max"></span>
+      </div>
+    </div>
+
+    <div class="window-body">
+
+      <!-- شعار بوكي الكروم -->
+      <div class="bubble-logo">Pookie</div>
+      <div class="subtitle">✦ GIRLS CYBER COMMUNITY ✦</div>
+
+      <div class="milestone-badge">✮ 16,000 CYBER POOKIES ✮</div>
+
+      <p class="intro">
+        عائلتنا كبرت وصرنا 16k بستايل الـ Y2K! شكراً لكل وحدة خلت سيرفرنا أحلى مكان بالكون 💕✨
+      </p>
+
+      <!-- 1. صندوق المفاجأة -->
+      <div class="gift-btn" onclick="openGift()">
+        <span class="gift-icon">🎁</span>
+        <span class="gift-label">★ افتحي هديتك الاحتفالية! ★</span>
+        <div class="gift-result" id="giftText">
+          💌 <strong>رسالة الإدارة:</strong><br>
+          وصلنا 16,000 بوجودكم ولمستكم الكيوت! احتفلي معنا وشاركينا فرحة الـ 16k بالسيرفر 💕
+        </div>
+      </div>
+
+      <!-- 2. زر أحب بوكي (وردة) -->
+      <div>
+        <button class="love-btn" onclick="addLove(event)">
+          <span>أحب Pookie</span> 
+          <span>🌸</span>
+          <span id="loveCount" style="background: rgba(255,255,255,0.35); padding: 2px 10px; border-radius: 15px; border: 1px solid #ffffff;">16000</span>
+        </button>
+      </div>
+
+      <!-- 3. ساحة لعبة الصيد (18 قلباً Y2K) -->
+      <div class="game-section">
+        <div class="game-title">★ CYBER HEART CATCHER ★</div>
+        <div class="game-sub">المسي 16 قلب طاير بسرعة عشان تفوزي باللعبة!</div>
+        <div class="score-badge">القلوب المصادة: <span id="gameCounter">0</span> / 16</div>
+
+        <div class="arena">
+          <div id="t1" class="heart-target" onclick="catchHeart()">💖</div>
+          <div id="t2" class="heart-target" onclick="catchHeart()">💕</div>
+          <div id="t3" class="heart-target" onclick="catchHeart()">💓</div>
+          <div id="t4" class="heart-target" onclick="catchHeart()">💗</div>
+          <div id="t5" class="heart-target" onclick="catchHeart()">❤️</div>
+          <div id="t6" class="heart-target" onclick="catchHeart()">💝</div>
+          <div id="t7" class="heart-target" onclick="catchHeart()">💖</div>
+          <div id="t8" class="heart-target" onclick="catchHeart()">💓</div>
+          <div id="t9" class="heart-target" onclick="catchHeart()">💞</div>
+          <div id="t10" class="heart-target" onclick="catchHeart()">❤️</div>
+          <div id="t11" class="heart-target" onclick="catchHeart()">💕</div>
+          <div id="t12" class="heart-target" onclick="catchHeart()">💖</div>
+          <div id="t13" class="heart-target" onclick="catchHeart()">💗</div>
+          <div id="t14" class="heart-target" onclick="catchHeart()">💘</div>
+          <div id="t15" class="heart-target" onclick="catchHeart()">💞</div>
+          <div id="t16" class="heart-target" onclick="catchHeart()">💝</div>
+          <div id="t17" class="heart-target" onclick="catchHeart()">❤️</div>
+          <div id="t18" class="heart-target" onclick="catchHeart()">💖</div>
+
+          <div class="game-win" id="winBox">
+            <div style="font-size: 2.4rem;">👑✨</div>
+            <strong style="color: #ff007f; font-size: 1.1rem; margin: 3px 0;">★ WINNER POOKIE! ★</strong>
+            <p style="color: #a01a5b; font-size: 0.82rem; margin-bottom: 8px;">جمعتي 16 قلب بنجاح واحتفلتي معنا 💖</p>
+            <button class="send-btn" style="margin:0;" onclick="resetGame()">العب من جديد 🔄</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. دفتر الرسائل مع رفع الصور -->
+      <div class="guestbook">
+        <div class="guestbook-heading">★ GUESTBOOK: اتركي ذكرى أو صورة ★</div>
+        <input type="text" id="guestName" class="inp-field" placeholder="اسمك أو يوزرك بالديسكورد ✨">
+        <textarea id="guestMsg" class="txt-field" placeholder="اكتبي رسالتك الكيوت هنا..."></textarea>
+        
+        <div class="file-upload-wrap">
+          <label class="file-label" for="guestPhoto">
+            <span>📷 إرفاق صورة (اختياري)</span>
+          </label>
+          <input type="file" id="guestPhoto" accept="image/*" style="display:none;" onchange="showFileName(this)">
+          <span class="file-name-preview" id="fileNamePreview"></span>
+        </div>
+
+        <button class="send-btn" onclick="submitMessage()">إرسال الكلمة 🌸</button>
+
+        <div class="messages-box" id="messagesList">
+          <div class="msg-card">
+            <div class="msg-sender">💖 أسيل & ليان (الإدارة)</div>
+            <div class="msg-body">أهلاً بأحلى بوكيز بالـ Y2K Era! اكتبوا لنا ذكرياتكم وشاركونا صوركم 💕</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. قسم الإدارة -->
+      <div class="creators-wrap">
+        <div class="creators-flex">
+          <div class="creator-card">
+            <div class="avatar-circle">
+              <img src="https://i.ibb.co/vCrkCh9k/image.png" alt="Aseel">
+            </div>
+            <span class="creator-tag">Aseel</span>
+          </div>
+
+          <div class="heart-pulse">💖</div>
+
+          <div class="creator-card">
+            <div class="avatar-circle">
+              <img src="https://i.ibb.co/CKmwRxLm/image.png" alt="layan">
+            </div>
+            <span class="creator-tag">layan</span>
+          </div>
+        </div>
+
+        <div class="footer-sign">★ MADE WITH LOVE BY ASEEL & LAYAN ★</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function dropConfetti() {
+      const colors = ['#ff007f', '#ff1493', '#ff69b4', '#ffb6c1', '#ffffff', '#ffd166', '#00f5d4'];
+      for (let i = 0; i < 45; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.left = (Math.random() * 100) + 'vw';
+        piece.style.top = (Math.random() * -30) + 'px';
+        piece.style.animationDuration = (Math.random() * 1 + 1.2) + 's';
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), 2200);
+      }
+    }
+
+    function openGift() {
+      document.getElementById('giftText').style.display = 'block';
+      dropConfetti();
+    }
+
+    let totalLoves = 16000;
+    function addLove(e) {
+      totalLoves++;
+      document.getElementById('loveCount').innerText = totalLoves;
+
+      const rose = document.createElement('div');
+      rose.textContent = '🌸';
+      rose.className = 'floating-rose-pop';
+      const x = e.clientX || (window.innerWidth / 2);
+      const y = e.clientY || (window.innerHeight / 2);
+      rose.style.left = (x - 12) + 'px';
+      rose.style.top = (y - 20) + 'px';
+      document.body.appendChild(rose);
+      setTimeout(() => rose.remove(), 1000);
+    }
+
+    let caughtCount = 0;
+    function catchHeart() {
+      if (caughtCount >= 16) return;
+      caughtCount++;
+      document.getElementById('gameCounter').innerText = caughtCount;
+
+      if (caughtCount >= 16) {
+        document.getElementById('winBox').style.display = 'flex';
+        dropConfetti();
+      }
+    }
+
+    function resetGame() {
+      caughtCount = 0;
+      document.getElementById('gameCounter').innerText = '0';
+      document.getElementById('winBox').style.display = 'none';
+    }
+
+    function showFileName(input) {
+      const preview = document.getElementById('fileNamePreview');
+      if (input.files && input.files[0]) {
+        preview.innerText = '📎 ' + input.files[0].name;
+      } else {
+        preview.innerText = '';
+      }
+    }
+
+    function submitMessage() {
+      const nameInput = document.getElementById('guestName');
+      const msgInput = document.getElementById('guestMsg');
+      const photoInput = document.getElementById('guestPhoto');
+
+      const name = nameInput.value.trim();
+      const msg = msgInput.value.trim();
+
+      if (!name || (!msg && !photoInput.files[0])) {
+        alert('اكتبي اسمك ورسالتك أو أرفقي صورة يا قمر 💕');
+        return;
+      }
+
+      function buildCard(imgSrc) {
+        const card = document.createElement('div');
+        card.className = 'msg-card';
+        
+        let cardHTML = '<div class="msg-sender">💖 ' + name + '</div>';
+        if (msg) {
+          cardHTML += '<div class="msg-body">' + msg + '</div>';
+        }
+        if (imgSrc) {
+          cardHTML += '<img src="' + imgSrc + '" class="msg-img" alt="مرفق صورة">';
+        }
+
+        card.innerHTML = cardHTML;
+        const list = document.getElementById('messagesList');
+        list.insertBefore(card, list.firstChild);
+
+        nameInput.value = '';
+        msgInput.value = '';
+        photoInput.value = '';
+        document.getElementById('fileNamePreview').innerText = '';
+        dropConfetti();
+      }
+
+      if (photoInput.files && photoInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          buildCard(e.target.result);
+        };
+        reader.readAsDataURL(photoInput.files[0]);
+      } else {
+        buildCard(null);
+      }
+    }
+  </script>
+
+</body>
+</html>
