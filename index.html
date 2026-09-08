@@ -694,23 +694,18 @@
     </div>
   </div>
 
-  <!-- مكتبات Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
   <script>
-    // الدوال الأساسية (الهدية، اللعبة، الإعجاب)
     function dropConfetti() {
-      const colors = ['#ff007f', '#ff1493', '#ff69b4', '#ffb6c1', '#ffffff', '#ffd166', '#00f5d4'];
-      for (let i = 0; i < 45; i++) {
-        const piece = document.createElement('div');
+      var colors = ['#ff007f', '#ff1493', '#ff69b4', '#ffb6c1', '#ffffff', '#ffd166', '#00f5d4'];
+      for (var i = 0; i < 40; i++) {
+        var piece = document.createElement('div');
         piece.className = 'confetti-piece';
         piece.style.background = colors[Math.floor(Math.random() * colors.length)];
         piece.style.left = (Math.random() * 100) + 'vw';
         piece.style.top = (Math.random() * -30) + 'px';
         piece.style.animationDuration = (Math.random() * 1 + 1.2) + 's';
         document.body.appendChild(piece);
-        setTimeout(() => piece.remove(), 2200);
+        setTimeout(function(el) { el.remove(); }, 2200, piece);
       }
     }
 
@@ -719,23 +714,23 @@
       dropConfetti();
     }
 
-    let totalLoves = 16000;
+    var totalLoves = 16000;
     function addLove(e) {
       totalLoves++;
       document.getElementById('loveCount').innerText = totalLoves;
 
-      const rose = document.createElement('div');
+      var rose = document.createElement('div');
       rose.textContent = '🌸';
       rose.className = 'floating-rose-pop';
-      const x = e.clientX || (window.innerWidth / 2);
-      const y = e.clientY || (window.innerHeight / 2);
+      var x = (e && e.clientX) ? e.clientX : (window.innerWidth / 2);
+      var y = (e && e.clientY) ? e.clientY : (window.innerHeight / 2);
       rose.style.left = (x - 12) + 'px';
       rose.style.top = (y - 20) + 'px';
       document.body.appendChild(rose);
-      setTimeout(() => rose.remove(), 1000);
+      setTimeout(function() { rose.remove(); }, 1000);
     }
 
-    let caughtCount = 0;
+    var caughtCount = 0;
     function catchHeart() {
       if (caughtCount >= 16) return;
       caughtCount++;
@@ -754,7 +749,7 @@
     }
 
     function showFileName(input) {
-      const preview = document.getElementById('fileNamePreview');
+      var preview = document.getElementById('fileNamePreview');
       if (input.files && input.files[0]) {
         preview.innerText = '📎 ' + input.files[0].name;
       } else {
@@ -764,153 +759,50 @@
 
     function escapeHtml(text) {
       if (!text) return '';
-      const div = document.createElement('div');
+      var div = document.createElement('div');
       div.innerText = text;
       return div.innerHTML;
     }
 
-    // إعداد وتشغيل قاعدة البيانات Firebase
-    let db = null;
-    try {
-      const firebaseConfig = {
-        apiKey: "AIzaSyCVnrGHWR9PL2Jigw7JPg20GDJPwQ07akU",
-        authDomain: "pookie-16k.firebaseapp.com",
-        projectId: "pookie-16k",
-        storageBucket: "pookie-16k.firebasestorage.app",
-        messagingSenderId: "757846411305",
-        appId: "1:757846411305:web:81e52ed322a5eaabae7438",
-        measurementId: "G-DEJ1E2ZM93"
-      };
-      firebase.initializeApp(firebaseConfig);
-      db = firebase.firestore();
-
-      db.collection("messages").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
-        const list = document.getElementById('messagesList');
-        list.innerHTML = `
-          <div class="msg-card">
-            <div class="msg-sender-row">
-              <div class="msg-sender">💖 أسيل & ليان (الإدارة)</div>
-            </div>
-            <div class="msg-body">اهلا بأحلى بوكيز بالعالم! اكتبوا لنا ذكرياتكم وشاركونا صوركم الحلوة بالـ 16k 💕</div>
-          </div>
-        `;
-
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          const card = document.createElement('div');
-          card.className = 'msg-card';
-
-          let html = `
-            <div class="msg-sender-row">
-              <div class="msg-sender">🌸 ${escapeHtml(data.name)}</div>
-            </div>
-          `;
-
-          if (data.message) {
-            html += <div class="msg-body">${escapeHtml(data.message)}</div>;
-          }
-          if (data.image) {
-            html += <img src="${data.image}" class="msg-img" alt="صورة مرفقة">;
-          }
-
-          card.innerHTML = html;
-          list.appendChild(card);
-        });
-      });
-    } catch (e) {
-      console.log("Firebase status: Local fallback");
-    }
-
-    function compressImage(file, callback) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          let width = img.width;
-          let height = img.height;
-          const maxDim = 400;
-
-          if (width > height && width > maxDim) {
-            height = Math.round((height * maxDim) / width);
-            width = maxDim;
-          } else if (height > maxDim) {
-            width = Math.round((width * maxDim) / height);
-            height = maxDim;
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          callback(canvas.toDataURL('image/jpeg', 0.6));
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
     function submitMessage() {
-      const nameInput = document.getElementById('guestName');
-      const msgInput = document.getElementById('guestMsg');
-      const photoInput = document.getElementById('guestPhoto');
-      const sendBtn = document.getElementById('sendBtn');
+      var nameInput = document.getElementById('guestName');
+      var msgInput = document.getElementById('guestMsg');
+      var photoInput = document.getElementById('guestPhoto');
 
-      const name = nameInput.value.trim();
-      const msg = msgInput.value.trim();
+      var name = nameInput.value.trim();
+      var msg = msgInput.value.trim();
 
       if (!name || (!msg && !photoInput.files[0])) {
         alert('اكتبي اسمك ورسالتك أو أرفقي صورة يا قمر 💕');
         return;
       }
 
-      sendBtn.disabled = true;
-      sendBtn.innerText = 'جاري الإرسال... ✨';
-
-      const saveDoc = (imgBase64) => {
-        if (db) {
-          db.collection("messages").add({
-            name: name,
-            message: msg,
-            image: imgBase64 || null,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-          }).then(() => {
-            cleanForm();
-          }).catch(() => {
-            localCard(imgBase64);
-            cleanForm();
-          });
-        } else {
-          localCard(imgBase64);
-          cleanForm();
-        }
-      };
-
-      function localCard(imgSrc) {
-        const list = document.getElementById('messagesList');
-        const card = document.createElement('div');
+      function addCard(imgSrc) {
+        var card = document.createElement('div');
         card.className = 'msg-card';
-        let html = <div class="msg-sender-row"><div class="msg-sender">🌸 ${escapeHtml(name)}</div></div>;
-        if (msg) html += <div class="msg-body">${escapeHtml(msg)}</div>;
-        if (imgSrc) html += <img src="${imgSrc}" class="msg-img">;
+        var html = '<div class="msg-sender-row"><div class="msg-sender">🌸 ' + escapeHtml(name) + '</div></div>';
+        if (msg) html += '<div class="msg-body">' + escapeHtml(msg) + '</div>';
+        if (imgSrc) html += '<img src="' + imgSrc + '" class="msg-img" alt="صورة مرفقة">';
         card.innerHTML = html;
-        list.insertBefore(card, list.children[1]);
-      }
 
-      function cleanForm() {
+        var list = document.getElementById('messagesList');
+        list.insertBefore(card, list.children[1] || null);
+
         nameInput.value = '';
         msgInput.value = '';
         photoInput.value = '';
         document.getElementById('fileNamePreview').innerText = '';
-        sendBtn.disabled = false;
-        sendBtn.innerText = 'إرسال الكلمة 🌸';
         dropConfetti();
       }
 
       if (photoInput.files && photoInput.files[0]) {
-        compressImage(photoInput.files[0], saveDoc);
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          addCard(e.target.result);
+        };
+        reader.readAsDataURL(photoInput.files[0]);
       } else {
-        saveDoc(null);
+        addCard(null);
       }
     }
   </script>
