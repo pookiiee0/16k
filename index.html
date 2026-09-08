@@ -562,6 +562,10 @@
       100% { opacity: 0; transform: translateY(-90px) scale(1.6); }
     }
   </style>
+
+  <!-- استدعاء Firebase بطريقة مستقرة ومتوافقة 100% مع جيت هاب -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 </head>
 <body>
 
@@ -695,6 +699,7 @@
   </div>
 
   <script>
+    // الدوال التفاعلية الأساسية (تعمل بشكل مستقل فوري)
     function dropConfetti() {
       var colors = ['#ff007f', '#ff1493', '#ff69b4', '#ffb6c1', '#ffffff', '#ffd166', '#00f5d4'];
       for (var i = 0; i < 40; i++) {
@@ -764,10 +769,88 @@
       return div.innerHTML;
     }
 
+    // الربط مع قاعدة بيانات Firebase
+    var db = null;
+    try {
+      var firebaseConfig = {
+        apiKey: "AIzaSyCVnrGHWR9PL2Jigw7JPg20GDJPwQ07akU",
+        authDomain: "pookie-16k.firebaseapp.com",
+        projectId: "pookie-16k",
+        storageBucket: "pookie-16k.firebasestorage.app",
+        messagingSenderId: "757846411305",
+        appId: "1:757846411305:web:81e52ed322a5eaabae7438",
+        measurementId: "G-DEJ1E2ZM93"
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+
+      // جلب الرسائل المحفوظة باستمرار
+      db.collection("messages").orderBy("timestamp", "desc").onSnapshot(function(snapshot) {
+        var list = document.getElementById('messagesList');
+        list.innerHTML = 
+          '<div class="msg-card">' +
+            '<div class="msg-sender-row">' +
+              '<div class="msg-sender">💖 أسيل & ليان (الإدارة)</div>' +
+            '</div>' +
+            '<div class="msg-body">اهلا بأحلى بوكيز بالعالم! اكتبوا لنا ذكرياتكم وشاركونا صوركم الحلوة بالـ 16k 💕</div>' +
+          '</div>';
+
+        snapshot.forEach(function(doc) {
+          var data = doc.data();
+          var card = document.createElement('div');
+          card.className = 'msg-card';
+          var html = '<div class="msg-sender-row"><div class="msg-sender">🌸 ' + escapeHtml(data.name) + '</div></div>';
+          if (data.message) {
+            html += '<div class="msg-body">' + escapeHtml(data.message) + '</div>';
+          }
+          if (data.image) {
+            html += '<img src="' + data.image + '" class="msg-img" alt="صورة مرفقة">';
+          }
+          card.innerHTML = html;
+          list.appendChild(card);
+        });
+      }, function(error) {
+        console.warn("Firebase Read Error:", error);
+      });
+    } catch(e) {
+      console.warn("Firebase Init Error:", e);
+    }
+
+    function compressImage(file, callback) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = new Image();
+        img.onload = function() {
+          var canvas = document.createElement('canvas');
+          var width = img.width;
+          var height = img.height;
+          var maxDim = 400;
+
+          if (width > height && width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else if (height > maxDim) {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          callback(canvas.toDataURL('image/jpeg', 0.6));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
     function submitMessage() {
       var nameInput = document.getElementById('guestName');
       var msgInput = document.getElementById('guestMsg');
       var photoInput = document.getElementById('guestPhoto');
+      var sendBtn = document.getElementById('sendBtn');
 
       var name = nameInput.value.trim();
       var msg = msgInput.value.trim();
@@ -777,32 +860,40 @@
         return;
       }
 
-      function addCard(imgSrc) {
-        var card = document.createElement('div');
-        card.className = 'msg-card';
-        var html = '<div class="msg-sender-row"><div class="msg-sender">🌸 ' + escapeHtml(name) + '</div></div>';
-        if (msg) html += '<div class="msg-body">' + escapeHtml(msg) + '</div>';
-        if (imgSrc) html += '<img src="' + imgSrc + '" class="msg-img" alt="صورة مرفقة">';
-        card.innerHTML = html;
+      sendBtn.disabled = true;
+      sendBtn.innerText = 'جاري الإرسال... ✨';
 
-        var list = document.getElementById('messagesList');
-        list.insertBefore(card, list.children[1] || null);
+      var saveDoc = function(imgBase64) {
+        if (db) {
+          db.collection("messages").add({
+            name: name,
+            message: msg,
+            image: imgBase64 || null,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          }).then(function() {
+            clearInputs();
+          }).catch(function(err) {
+            alert('لم يتم الحفظ في السيرفر: تأكدي من تفعيل الـ Rules في Firebase!');
+            sendBtn.disabled = false;
+            sendBtn.innerText = 'إرسال الكلمة 🌸';
+          });
+        }
+      };
 
+      function clearInputs() {
         nameInput.value = '';
         msgInput.value = '';
         photoInput.value = '';
         document.getElementById('fileNamePreview').innerText = '';
+        sendBtn.disabled = false;
+        sendBtn.innerText = 'إرسال الكلمة 🌸';
         dropConfetti();
       }
 
       if (photoInput.files && photoInput.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-          addCard(e.target.result);
-        };
-        reader.readAsDataURL(photoInput.files[0]);
+        compressImage(photoInput.files[0], saveDoc);
       } else {
-        addCard(null);
+        saveDoc(null);
       }
     }
   </script>
