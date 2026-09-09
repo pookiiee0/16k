@@ -451,6 +451,17 @@
       font-size: 0.82rem;
     }
 
+    .delete-btn {
+      background: #ff3366;
+      color: white;
+      border: none;
+      padding: 3px 8px;
+      border-radius: 8px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      display: none;
+    }
+
     .msg-body {
       font-size: 0.82rem;
       color: #723c4f;
@@ -532,6 +543,17 @@
       font-weight: bold;
       color: #b30059;
       letter-spacing: 0.5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .secret-admin-trigger {
+      cursor: pointer;
+      user-select: none;
+      display: inline-block;
+      padding: 0 4px;
     }
 
     .confetti-piece {
@@ -563,7 +585,7 @@
     }
   </style>
 
-  <!-- استدعاء Firebase بطريقة مستقرة ومتوافقة 100% مع جيت هاب -->
+  <!-- استدعاء Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 </head>
@@ -647,7 +669,9 @@
 
       <!-- 4. دفتر الرسائل -->
       <div class="guestbook">
-        <div class="guestbook-heading">★ GUESTBOOK: اتركي ذكرى أو صورة ★</div>
+        <div class="guestbook-heading">
+          ★ GUESTBOOK: اتركي ذكرى أو صورة ★
+        </div>
 
         <input type="text" id="guestName" class="inp-field" placeholder="اسمك أو يوزرك بالديسكورد ✨">
         <textarea id="guestMsg" class="txt-field" placeholder="اكتبي رسالتك الكيوت هنا..."></textarea>
@@ -692,14 +716,18 @@
           </div>
         </div>
 
-        <div class="footer-sign">★ MADE WITH LOVE BY ASEEL & LAYAN ★</div>
+        <div class="footer-sign">
+          <!-- اضغطي ضغطة عادية على النجمة الأولى لدخول الإدارة -->
+          <span class="secret-admin-trigger" onclick="loginAdmin()">★</span>
+          <span>MADE WITH LOVE BY ASEEL & LAYAN</span>
+          <span>★</span>
+        </div>
       </div>
 
     </div>
   </div>
 
   <script>
-    // الدوال التفاعلية الأساسية (تعمل بشكل مستقل فوري)
     function dropConfetti() {
       var colors = ['#ff007f', '#ff1493', '#ff69b4', '#ffb6c1', '#ffffff', '#ffd166', '#00f5d4'];
       for (var i = 0; i < 40; i++) {
@@ -769,7 +797,33 @@
       return div.innerHTML;
     }
 
-    // الربط مع قاعدة بيانات Firebase
+    // زر الإدارة السري: ضغطة واحدة على أول نجمة بالأسفل
+    var isAdmin = false;
+    function loginAdmin() {
+      var pass = prompt('دخول الإدارة (أسيل / ليان) 💕 أدخلي الرمز:');
+      if (pass === '1234') {
+        isAdmin = true;
+        alert('تم تفعيل وضع الإدارة بنجاح! ظهرت أزرار الحذف 🗑️');
+        var btns = document.querySelectorAll('.delete-btn');
+        btns.forEach(function(btn) { btn.style.display = 'inline-block'; });
+      } else if (pass !== null) {
+        alert('الرمز غير صحيح!');
+      }
+    }
+
+    function deleteCard(docId) {
+      if (confirm('هل أنتِ متأكدة من رغبتك بحذف هذه الرسالة؟')) {
+        if (db) {
+          db.collection("messages").doc(docId).delete().then(function() {
+            alert('تم حذف الرسالة بنجاح ✨');
+          }).catch(function(err) {
+            alert('خطأ أثناء الحذف: ' + err.message);
+          });
+        }
+      }
+    }
+
+    // إعداد وتشغيل قاعدة البيانات
     var db = null;
     try {
       var firebaseConfig = {
@@ -785,7 +839,6 @@
       firebase.initializeApp(firebaseConfig);
       db = firebase.firestore();
 
-      // جلب الرسائل المحفوظة باستمرار
       db.collection("messages").orderBy("timestamp", "desc").onSnapshot(function(snapshot) {
         var list = document.getElementById('messagesList');
         list.innerHTML = 
@@ -800,7 +853,14 @@
           var data = doc.data();
           var card = document.createElement('div');
           card.className = 'msg-card';
-          var html = '<div class="msg-sender-row"><div class="msg-sender">🌸 ' + escapeHtml(data.name) + '</div></div>';
+          var displayStyle = isAdmin ? 'inline-block' : 'none';
+
+          var html = 
+            '<div class="msg-sender-row">' +
+              '<div class="msg-sender">🌸 ' + escapeHtml(data.name) + '</div>' +
+              '<button class="delete-btn" style="display:' + displayStyle + ';" onclick="deleteCard(\'' + doc.id + '\')">🗑️ حذف</button>' +
+            '</div>';
+
           if (data.message) {
             html += '<div class="msg-body">' + escapeHtml(data.message) + '</div>';
           }
@@ -873,7 +933,7 @@
           }).then(function() {
             clearInputs();
           }).catch(function(err) {
-            alert('لم يتم الحفظ في السيرفر: تأكدي من تفعيل الـ Rules في Firebase!');
+            alert('تعذر الحفظ: ' + err.message + '\nتأكدي من حفظ الـ Rules في Firebase على allow read, write: if true;');
             sendBtn.disabled = false;
             sendBtn.innerText = 'إرسال الكلمة 🌸';
           });
