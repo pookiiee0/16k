@@ -623,7 +623,7 @@
         </div>
       </div>
 
-      <!-- 2. زر أحب بوكي (وردة) -->
+      <!-- 2. زر أحب بوكي (يحفظ لحظياً في Firebase) -->
       <div>
         <button class="love-btn" onclick="addLove(event)">
           <span>أحب Pookie</span> 
@@ -717,7 +717,6 @@
         </div>
 
         <div class="footer-sign">
-          <!-- اضغطي ضغطة عادية على النجمة الأولى لدخول الإدارة -->
           <span class="secret-admin-trigger" onclick="loginAdmin()">★</span>
           <span>MADE WITH LOVE BY ASEEL & LAYAN</span>
           <span>★</span>
@@ -748,6 +747,7 @@
     }
 
     var totalLoves = 16000;
+
     function addLove(e) {
       totalLoves++;
       document.getElementById('loveCount').innerText = totalLoves;
@@ -761,6 +761,13 @@
       rose.style.top = (y - 20) + 'px';
       document.body.appendChild(rose);
       setTimeout(function() { rose.remove(); }, 1000);
+
+      // حفظ الزيادة مباشرة في Firebase
+      if (db) {
+        db.collection("stats").doc("loves").set({
+          count: firebase.firestore.FieldValue.increment(1)
+        }, { merge: true });
+      }
     }
 
     var caughtCount = 0;
@@ -797,7 +804,6 @@
       return div.innerHTML;
     }
 
-    // زر الإدارة السري: ضغطة واحدة على أول نجمة بالأسفل
     var isAdmin = false;
     function loginAdmin() {
       var pass = prompt('دخول الإدارة (أسيل / ليان) 💕 أدخلي الرمز:');
@@ -823,7 +829,6 @@
       }
     }
 
-    // إعداد وتشغيل قاعدة البيانات
     var db = null;
     try {
       var firebaseConfig = {
@@ -839,6 +844,15 @@
       firebase.initializeApp(firebaseConfig);
       db = firebase.firestore();
 
+      // مزامنة عدد الإعجابات مع Firebase
+      db.collection("stats").doc("loves").onSnapshot(function(doc) {
+        if (doc.exists && doc.data().count !== undefined) {
+          totalLoves = 16000 + doc.data().count;
+          document.getElementById('loveCount').innerText = totalLoves;
+        }
+      });
+
+      // جلب الرسائل المحفوظة
       db.collection("messages").orderBy("timestamp", "desc").onSnapshot(function(snapshot) {
         var list = document.getElementById('messagesList');
         list.innerHTML = 
@@ -933,7 +947,7 @@
           }).then(function() {
             clearInputs();
           }).catch(function(err) {
-            alert('تعذر الحفظ: ' + err.message + '\nتأكدي من حفظ الـ Rules في Firebase على allow read, write: if true;');
+            alert('تعذر الحفظ: ' + err.message);
             sendBtn.disabled = false;
             sendBtn.innerText = 'إرسال الكلمة 🌸';
           });
